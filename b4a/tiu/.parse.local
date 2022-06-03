@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "_default": {
+      "link": "tiu"
+    },
+    "tiu": {
+      "applicationId": "87r8wlI2XbpS8VzOIjgC4CDGW8Gsi4E0gV7pmp6z"
+    }
+  }
+}
