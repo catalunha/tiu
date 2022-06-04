@@ -27,7 +27,7 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ler arquivo de dados'),
+        title: const Text('Ler arquivo de marcos'),
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -40,7 +40,7 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
                 onPressed: () {
                   widget._milestoneController.processFile();
                 },
-                child: const Text('Ler os dados e analisar.'),
+                child: const Text('Ler arquivo e analisar.'),
               ),
               Obx(
                 () => Table(
@@ -49,6 +49,7 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
                   columnWidths: const {
                     0: FractionColumnWidth(0.07),
                     5: FractionColumnWidth(0.07),
+                    6: FractionColumnWidth(0.07),
                   },
                 ),
               ),
@@ -86,7 +87,16 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
                 ],
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  print(utmFuso.name);
+                  print(utmZona.name);
+                  print(utmPole.name);
+                  widget._milestoneController.saveCloud(
+                    utmFuso: utmFuso.name,
+                    utmZona: utmZona.name,
+                    utmPole: utmPole.name,
+                  );
+                },
                 child: const Text('Salvar na nuvem'),
               ),
             ],
@@ -104,7 +114,8 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
       header('UTM'),
       header('Geog.'),
       header('Elev.'),
-      header('X'),
+      header('Dup.'),
+      header('Del.'),
     ]));
     for (var i = 0; i < widget._milestoneController.csvList.length; i++) {
       rows.add(
@@ -117,7 +128,14 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
             line(
                 '${widget._milestoneController.csvList[i].lat}\n${widget._milestoneController.csvList[i].long}'),
             line(widget._milestoneController.csvList[i].utmz),
-            const Icon(Icons.delete_forever),
+            widget._milestoneController.csvList[i].duplicated == null
+                ? const Icon(Icons.location_pin)
+                : const Icon(Icons.copy_outlined),
+            InkWell(
+                onTap: () {
+                  widget._milestoneController.deleteCsv(i);
+                },
+                child: const Icon(Icons.delete_forever)),
           ],
         ),
       );

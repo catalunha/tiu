@@ -7,6 +7,7 @@ class CsvModel {
   final double? utmz;
   final double? lat;
   final double? long;
+  final String? duplicated;
   CsvModel({
     this.name,
     this.utmx,
@@ -14,6 +15,7 @@ class CsvModel {
     this.utmz,
     this.lat,
     this.long,
+    this.duplicated,
   });
 
   CsvModel copyWith({
@@ -23,6 +25,7 @@ class CsvModel {
     double? utmz,
     double? lat,
     double? long,
+    String? duplicated,
   }) {
     return CsvModel(
       name: name ?? this.name,
@@ -31,6 +34,7 @@ class CsvModel {
       utmz: utmz ?? this.utmz,
       lat: lat ?? this.lat,
       long: long ?? this.long,
+      duplicated: duplicated ?? this.duplicated,
     );
   }
 
@@ -42,6 +46,7 @@ class CsvModel {
       'utmz': utmz,
       'lat': lat,
       'long': long,
+      'duplicated': duplicated,
     };
   }
 
@@ -53,6 +58,7 @@ class CsvModel {
       utmz: map['utmz']?.toDouble(),
       lat: map['lat']?.toDouble(),
       long: map['long']?.toDouble(),
+      duplicated: map['duplicated'],
     );
   }
 
@@ -63,7 +69,7 @@ class CsvModel {
 
   @override
   String toString() {
-    return 'CsvModel(name: $name, utmx: $utmx, utmy: $utmy, utmz: $utmz, lat: $lat, long: $long)';
+    return 'CsvModel(name: $name, utmx: $utmx, utmy: $utmy, utmz: $utmz, lat: $lat, long: $long, duplicated: $duplicated)';
   }
 
   @override
@@ -76,7 +82,8 @@ class CsvModel {
         other.utmy == utmy &&
         other.utmz == utmz &&
         other.lat == lat &&
-        other.long == long;
+        other.long == long &&
+        other.duplicated == duplicated;
   }
 
   @override
@@ -86,6 +93,7 @@ class CsvModel {
         utmy.hashCode ^
         utmz.hashCode ^
         lat.hashCode ^
-        long.hashCode;
+        long.hashCode ^
+        duplicated.hashCode;
   }
 }

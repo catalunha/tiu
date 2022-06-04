@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:get/get.dart';
@@ -31,6 +30,8 @@ class MilestoneController extends GetxController
 
   final _csvList = <CsvModel>[].obs;
   List<CsvModel> get csvList => _csvList.toList();
+
+  String? fileString;
 
   @override
   void onInit() {
@@ -77,29 +78,55 @@ class MilestoneController extends GetxController
     }
   }
 
-  Future<void> saveCsv() async {
+  Future<void> saveCloud({
+    required String utmFuso,
+    required String utmZona,
+    required String utmPole,
+  }) async {
     try {
       _loading(true);
-
       if (_csvList.isNotEmpty) {
         SplashController splashController = Get.find();
         for (var line in _csvList) {
-          var model = MilestoneModel(
-            user: splashController.userModel!,
-            name: line.name!,
-            utmx: line.utmx!,
-            utmy: line.utmy!,
-            utmz: line.utmz!,
-            lat: line.lat!,
-            long: line.long!,
-          );
-          await _milestoneUseCase.create(model);
+          if (line.duplicated == null) {
+            var model = MilestoneModel(
+              user: splashController.userModel!,
+              name: line.name!,
+              utmx: line.utmx!,
+              utmy: line.utmy!,
+              utmz: line.utmz!,
+              lat: line.lat!,
+              long: line.long!,
+              utmfuso: utmFuso,
+              utmzone: utmZona,
+              utmpole: utmPole,
+            );
+            await _milestoneUseCase.create(model);
+          } else {
+            var model = MilestoneModel(
+              id: line.duplicated,
+              user: splashController.userModel!,
+              name: line.name!,
+              utmx: line.utmx!,
+              utmy: line.utmy!,
+              utmz: line.utmz!,
+              lat: line.lat!,
+              long: line.long!,
+              utmfuso: utmFuso,
+              utmzone: utmZona,
+              utmpole: utmPole,
+            );
+            await _milestoneUseCase.update(model);
+          }
         }
+      } else {
+        throw Exception();
       }
     } catch (e) {
+      _loading(false);
       _message.value = MessageModel(
-        title: 'Erro em Repository',
-        message: 'Nao foi possivel salvar o contato',
+        title: 'Erro em salvar dados',
+        message: 'Nao foi possivel salvar os dados',
         isError: true,
       );
     } finally {
@@ -125,19 +152,27 @@ class MilestoneController extends GetxController
     Get.back();
   }
 
+  void deleteCsv(int id) async {
+    _csvList.removeAt(id);
+  }
+
   processFile() async {
     try {
       _loading(true);
       _csvList.clear();
       print('processFile');
-      var arq = file!.openRead();
-      var arqlines = await arq
-          .transform(utf8.decoder)
-          .transform(const LineSplitter())
-          .toList();
-      // print(arqlines);
+      // var arq = file!.openRead();
+      // var arqlines = await arq
+      //     .transform(utf8.decoder)
+      //     .transform(const LineSplitter())
+      //     .toList();
+      // // print(arqlines);
+      if (fileString == null) {
+        throw Exception();
+      }
+      var arqlines = fileString!.split('\n');
       String separator = delimiter(arqlines[0]);
-      List<int> index = headerOrder(
+      List<int> index = headerLine(
           arqlines[0], ['Name', 'Northing', 'Easting', 'Lat', 'Lon', 'EllHt']);
 
       // var index = firstLine(
@@ -145,12 +180,14 @@ class MilestoneController extends GetxController
 
       // secondLine(arqlines[1], separator, index);
       for (var i = 1; i < arqlines.length; i++) {
-        secondLine(arqlines[i], separator, index);
+        nextLine(arqlines[i], separator, index);
         // print(line);
       }
+      analyzeDuplicateMilestone();
     } catch (e) {
+      _loading(false);
       _message.value = MessageModel(
-        title: 'Erro em no arquivo',
+        title: 'Erro no arquivo',
         message: 'Nao foi possivel ler os dados',
         isError: true,
       );
@@ -159,29 +196,31 @@ class MilestoneController extends GetxController
     }
   }
 
-  secondLine(
+  nextLine(
     String line,
     String separator,
     List<int> index,
   ) {
     var lineList = line.split(separator);
-    // print(index);
-    // print(lineList);
-    CsvModel csvModel = CsvModel(
-      name: lineList[index[0]],
-      utmx: double.tryParse(lineList[index[1]]),
-      utmy: double.tryParse(lineList[index[2]]),
-      lat: double.tryParse(lineList[index[3]]),
-      long: double.tryParse(lineList[index[4]]),
-      utmz: double.tryParse(lineList[index[5]]),
-    );
-    print(csvModel);
-    _csvList.add(csvModel);
-    var readOrdered = <String>[];
-    for (var i in index) {
-      readOrdered.add(lineList[i]);
+    if (lineList.length == index.length) {
+      // print(index);
+      // print(lineList);
+      CsvModel csvModel = CsvModel(
+        name: lineList[index[0]],
+        utmx: double.tryParse(lineList[index[1]]),
+        utmy: double.tryParse(lineList[index[2]]),
+        lat: double.tryParse(lineList[index[3]]),
+        long: double.tryParse(lineList[index[4]]),
+        utmz: double.tryParse(lineList[index[5]]),
+      );
+      print(csvModel);
+      _csvList.add(csvModel);
+      var readOrdered = <String>[];
+      for (var i in index) {
+        readOrdered.add(lineList[i]);
+      }
+      print(readOrdered);
     }
-    print(readOrdered);
   }
 
   String delimiter(String line) {
@@ -193,7 +232,7 @@ class MilestoneController extends GetxController
     return deliminter;
   }
 
-  List<int> headerOrder(
+  List<int> headerLine(
     String line,
     List<String> myColums,
   ) {
@@ -209,5 +248,18 @@ class MilestoneController extends GetxController
       // print(index);
     }
     return index;
+  }
+
+  analyzeDuplicateMilestone() {
+    for (var milestone in milestones) {
+      print(milestone.name);
+      for (var i = 0; i < csvList.length; i++) {
+        print(csvList[i].name);
+        if (csvList[i].name == milestone.name) {
+          _csvList.replaceRange(
+              i, i + 1, [csvList[i].copyWith(duplicated: milestone.id)]);
+        }
+      }
+    }
   }
 }
