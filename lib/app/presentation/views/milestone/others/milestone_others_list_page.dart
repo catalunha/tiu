@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tiu/app/presentation/controllers/milestone/milestone_controller.dart';
-import 'package:tiu/app/presentation/views/milestone/list/parts/milestone_list.dart';
+import 'package:tiu/app/presentation/views/milestone/others/parts/milestone_others_list.dart';
 import 'package:tiu/app/presentation/views/utils/app_appbar.dart';
-import 'package:tiu/app/routes.dart';
 
-class MilestoneListPage extends StatelessWidget {
+class MilestoneOthersListPage extends StatelessWidget {
   final MilestoneController _milestoneController = Get.find();
-  MilestoneListPage({Key? key}) : super(key: key);
+  MilestoneOthersListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppAppbar(
-        title: const Text('Meus marcos'),
+        title: const Text('Outros marcos'),
       ),
       body: Column(
         children: [
-          ElevatedButton(
-              onPressed: () => Get.toNamed(Routes.milestoneReadFile),
-              child: const Text('Importar novos marcos')),
           Expanded(
-            child: Obx(() => MilestoneList(
+            child: Obx(() => MilestoneOthersList(
                   milestones: _milestoneController.milestones,
                 )),
           ),

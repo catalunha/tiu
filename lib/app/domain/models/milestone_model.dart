@@ -6,14 +6,14 @@ class MilestoneModel {
   final String? id;
   final UserModel user;
   final String name;
-  final double? utmx;
-  final double? utmy;
-  final double? utmz;
+  final num? utmx;
+  final num? utmy;
+  final num? utmz;
   final String? utmfuso;
   final String? utmzone;
   final String? utmpole;
-  final double? lat;
-  final double? long;
+  final num? lat;
+  final num? long;
   MilestoneModel({
     this.id,
     required this.user,
@@ -32,14 +32,14 @@ class MilestoneModel {
     String? id,
     UserModel? user,
     String? name,
-    double? utmx,
-    double? utmy,
-    double? utmz,
+    num? utmx,
+    num? utmy,
+    num? utmz,
     String? utmfuso,
     String? utmzone,
     String? utmpole,
-    double? lat,
-    double? long,
+    num? lat,
+    num? long,
   }) {
     return MilestoneModel(
       id: id ?? this.id,

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:tiu/app/data/datasources/back4app/milestone/milestone_repository_exception.dart';
 import 'package:tiu/app/domain/models/csv_model.dart';
@@ -23,10 +21,11 @@ class MilestoneController extends GetxController
   final _milestoneList = <MilestoneModel>[].obs;
   List<MilestoneModel> get milestones => _milestoneList.toList();
 
+  final _milestoneOthersList = <MilestoneModel>[].obs;
+  List<MilestoneModel> get milestonesOthers => _milestoneOthersList.toList();
+
   final _milestone = Rxn<MilestoneModel>();
   MilestoneModel? get milestone => _milestone.value;
-
-  File? file;
 
   final _csvList = <CsvModel>[].obs;
   List<CsvModel> get csvList => _csvList.toList();
@@ -35,34 +34,59 @@ class MilestoneController extends GetxController
 
   @override
   void onInit() {
-    list();
+    listMyMilestones();
     loaderListener(_loading);
     messageListener(_message);
     super.onInit();
   }
 
-  Future<void> list() async {
+  Future<void> listMyMilestones() async {
     _milestoneList.clear();
     await _milestoneUseCase.list(_milestoneList);
+    await Get.toNamed(Routes.milestoneList);
   }
 
   Future<void> append({
     required String name,
+    required double? utmx,
+    required double? utmy,
+    required double? utmz,
+    required String? utmfuso,
+    required String? utmzone,
+    required String? utmpole,
+    required double? lat,
+    required double? long,
   }) async {
     try {
       _loading(true);
       MilestoneModel model;
-      String objectId;
       if (milestone == null) {
         SplashController splashController = Get.find();
         model = MilestoneModel(
           user: splashController.userModel!,
           name: name,
+          utmx: utmx,
+          utmy: utmy,
+          utmz: utmz,
+          utmfuso: utmfuso,
+          utmzone: utmzone,
+          utmpole: utmpole,
+          lat: lat,
+          long: long,
         );
         await _milestoneUseCase.create(model);
       } else {
         model = milestone!.copyWith(
+          id: milestone!.id,
           name: name,
+          utmx: utmx,
+          utmy: utmy,
+          utmz: utmz,
+          utmfuso: utmfuso,
+          utmzone: utmzone,
+          utmpole: utmpole,
+          lat: lat,
+          long: long,
         );
         await _milestoneUseCase.update(model);
       }
@@ -73,7 +97,7 @@ class MilestoneController extends GetxController
         isError: true,
       );
     } finally {
-      list();
+      listMyMilestones();
       _loading(false);
     }
   }
@@ -130,13 +154,14 @@ class MilestoneController extends GetxController
         isError: true,
       );
     } finally {
-      list();
+      listMyMilestones();
       _loading(false);
     }
   }
 
   void add() {
-    _milestone(null);
+    print('add');
+    _milestone.value = null;
     Get.toNamed(Routes.milestoneAppend);
   }
 
@@ -207,8 +232,8 @@ class MilestoneController extends GetxController
       // print(lineList);
       CsvModel csvModel = CsvModel(
         name: lineList[index[0]],
-        utmx: double.tryParse(lineList[index[1]]),
-        utmy: double.tryParse(lineList[index[2]]),
+        utmy: double.tryParse(lineList[index[1]]),
+        utmx: double.tryParse(lineList[index[2]]),
         lat: double.tryParse(lineList[index[3]]),
         long: double.tryParse(lineList[index[4]]),
         utmz: double.tryParse(lineList[index[5]]),

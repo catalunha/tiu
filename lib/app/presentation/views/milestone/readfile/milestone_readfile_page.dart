@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tiu/app/domain/utils/enums.dart';
 import 'package:tiu/app/presentation/controllers/milestone/milestone_controller.dart';
 import 'package:tiu/app/presentation/views/milestone/append/parts/file_data_button.dart';
+import 'package:tiu/app/presentation/views/utils/app_appbar.dart';
 
 class MilestoneReadFilePage extends StatefulWidget {
   final MilestoneController _milestoneController = Get.find();
@@ -15,7 +16,7 @@ class MilestoneReadFilePage extends StatefulWidget {
 
 class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
   UtmFuso utmFuso = UtmFuso.fuso23;
-  UtmZona utmZona = UtmZona.zonaK;
+  UtmZona utmZona = UtmZona.zonaX;
   UtmPole utmPole = UtmPole.sul;
 
   @override
@@ -26,8 +27,8 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ler arquivo de marcos'),
+      appBar: AppAppbar(
+        title: const Text('Selecionar, analisar e salvar'),
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -40,7 +41,7 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
                 onPressed: () {
                   widget._milestoneController.processFile();
                 },
-                child: const Text('Ler arquivo e analisar.'),
+                child: const Text('Importar e analisar.'),
               ),
               Obx(
                 () => Table(
@@ -48,8 +49,8 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
                   children: buildRow(),
                   columnWidths: const {
                     0: FractionColumnWidth(0.07),
-                    5: FractionColumnWidth(0.07),
-                    6: FractionColumnWidth(0.07),
+                    5: FractionColumnWidth(0.09),
+                    6: FractionColumnWidth(0.09),
                   },
                 ),
               ),
@@ -87,15 +88,13 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
                 ],
               ),
               ElevatedButton(
-                onPressed: () {
-                  print(utmFuso.name);
-                  print(utmZona.name);
-                  print(utmPole.name);
-                  widget._milestoneController.saveCloud(
+                onPressed: () async {
+                  await widget._milestoneController.saveCloud(
                     utmFuso: utmFuso.name,
                     utmZona: utmZona.name,
                     utmPole: utmPole.name,
                   );
+                  Get.back();
                 },
                 child: const Text('Salvar na nuvem'),
               ),

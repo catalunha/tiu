@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tiu/app/presentation/controllers/auth/splash/splash_controller.dart';
 import 'package:tiu/app/presentation/controllers/home/home_controller.dart';
+import 'package:tiu/app/presentation/controllers/milestone/milestone_controller.dart';
 import 'package:tiu/app/presentation/views/home/parts/popmenu_user.dart';
 import 'package:tiu/app/presentation/views/utils/app_appbar.dart';
 import 'package:tiu/app/routes.dart';
@@ -9,6 +10,7 @@ import 'package:tiu/app/routes.dart';
 class HomePage extends StatefulWidget {
   final SplashController _splashController = Get.find();
   final HomeController _homeController = Get.find();
+  final MilestoneController _milestoneController = Get.find();
 
   HomePage({Key? key}) : super(key: key);
 
@@ -26,10 +28,27 @@ class _HomePageState extends State<HomePage> {
             PopMenuButtonPhotoUser(),
           ],
         ),
-        body: Center(
-          child: ElevatedButton(
-              onPressed: () => Get.toNamed(Routes.milestoneList),
-              child: const Text('Marcos')),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Card(
+                child: ListTile(
+                  title: const Text(
+                    'Gerenciar meus marcos',
+                  ),
+                  onTap: () => widget._milestoneController.listMyMilestones(),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  title: const Text(
+                    'Visualizar outros marcos',
+                  ),
+                  onTap: () => Get.toNamed(Routes.milestoneOthersList),
+                ),
+              ),
+            ],
+          ),
         ));
   }
 

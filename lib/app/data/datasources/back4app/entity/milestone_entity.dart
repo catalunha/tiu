@@ -48,8 +48,11 @@ class MilestoneEntity {
       parseObject.set('utmpole', model.utmpole);
     }
     if (model.lat != null && model.long != null) {
-      parseObject.set('latlong',
-          ParseGeoPoint(latitude: model.lat!, longitude: model.long!));
+      parseObject.set(
+          'latlong',
+          ParseGeoPoint(
+              latitude: model.lat!.toDouble(),
+              longitude: model.long!.toDouble()));
     }
     return parseObject;
   }

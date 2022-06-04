@@ -31,6 +31,7 @@ enum UtmFuso {
 }
 
 enum UtmZona {
+  zonaX,
   zonaH,
   zonaJ,
   zonaK,
@@ -40,6 +41,8 @@ enum UtmZona {
 
   String get name {
     switch (this) {
+      case UtmZona.zonaX:
+        return '?';
       case UtmZona.zonaH:
         return 'N';
       case UtmZona.zonaJ:

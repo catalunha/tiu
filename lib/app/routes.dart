@@ -11,6 +11,7 @@ import 'package:tiu/app/presentation/views/auth/splash/splash_page.dart';
 import 'package:tiu/app/presentation/views/home/home_page.dart';
 import 'package:tiu/app/presentation/views/milestone/append/milestone_append_page.dart';
 import 'package:tiu/app/presentation/views/milestone/list/milestone_list_page.dart';
+import 'package:tiu/app/presentation/views/milestone/others/milestone_others_list_page.dart';
 import 'package:tiu/app/presentation/views/milestone/readfile/milestone_readfile_page.dart';
 import 'package:tiu/app/presentation/views/user/profile/user_profile_page.dart';
 
@@ -26,6 +27,8 @@ class Routes {
   static const milestoneList = '/milestone/list';
   static const milestoneAppend = '/milestone/append';
   static const milestoneReadFile = '/milestone/readfile';
+
+  static const milestoneOthersList = '/milestone/others/list';
 
   static final pageList = [
     GetPage(
@@ -67,6 +70,11 @@ class Routes {
       name: Routes.milestoneReadFile,
       binding: MilestoneDependencies(),
       page: () => MilestoneReadFilePage(),
+    ),
+    GetPage(
+      name: Routes.milestoneOthersList,
+      binding: MilestoneDependencies(),
+      page: () => MilestoneOthersListPage(),
     ),
   ];
 }
