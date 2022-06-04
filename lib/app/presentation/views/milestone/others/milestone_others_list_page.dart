@@ -12,13 +12,13 @@ class MilestoneOthersListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppAppbar(
-        title: const Text('Outros marcos'),
+        title: const Text('Marcos dos colegas'),
       ),
       body: Column(
         children: [
           Expanded(
             child: Obx(() => MilestoneOthersList(
-                  milestones: _milestoneController.milestones,
+                  milestones: _milestoneController.milestonesOthers,
                 )),
           ),
         ],

@@ -6,11 +6,15 @@ import 'package:tiu/app/domain/models/milestone_model.dart';
 
 class MilestoneRepositoryB4a extends GetxService
     implements MilestoneRepository {
-  Future<QueryBuilder<ParseObject>> getQuery() async {
+  Future<QueryBuilder<ParseObject>> getQuery(bool myMilestones) async {
     QueryBuilder<ParseObject> query =
         QueryBuilder<ParseObject>(ParseObject(MilestoneEntity.className));
     var currentUser = await ParseUser.currentUser() as ParseUser?;
-    query.whereEqualTo('user', currentUser);
+    if (myMilestones) {
+      query.whereEqualTo('user', currentUser);
+    } else {
+      query.whereNotEqualTo('user', currentUser);
+    }
     // if (pagination != null) {
     //   queryProduct.setAmountToSkip((pagination.page - 1) * pagination.limit);
     //   queryProduct.setLimit(pagination.limit);
@@ -26,19 +30,20 @@ class MilestoneRepositoryB4a extends GetxService
     // ]);
     // queryProduct.selectKeys('name', 'Ana');
     query.orderByAscending('name');
-    query.includeObject(['user']);
+    query.includeObject(['user', 'user.profile']);
     return query;
   }
 
   @override
-  Future<void> list(RxList<MilestoneModel> list) async {
-    final query = await getQuery();
+  Future<void> list(RxList<MilestoneModel> list, bool myMilestones) async {
+    final query = await getQuery(myMilestones);
 
     final ParseResponse response = await query.query();
     if (response.success && response.results != null) {
       list.clear();
       for (var element in response.results!) {
-        list.add(MilestoneEntity().fromParse(element as ParseObject));
+        print((element as ParseObject).objectId);
+        list.add(MilestoneEntity().fromParse(element));
       }
     } else {
       print('Sem Milestones...');

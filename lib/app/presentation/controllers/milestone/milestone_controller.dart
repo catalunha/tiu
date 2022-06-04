@@ -34,7 +34,12 @@ class MilestoneController extends GetxController
 
   @override
   void onInit() {
-    listMyMilestones();
+    String arg = Get.arguments;
+    if (arg == 'myMilestones') {
+      listMyMilestones();
+    } else {
+      listOthersMilestones();
+    }
     loaderListener(_loading);
     messageListener(_message);
     super.onInit();
@@ -42,8 +47,12 @@ class MilestoneController extends GetxController
 
   Future<void> listMyMilestones() async {
     _milestoneList.clear();
-    await _milestoneUseCase.list(_milestoneList);
-    await Get.toNamed(Routes.milestoneList);
+    await _milestoneUseCase.list(_milestoneList, true);
+  }
+
+  Future<void> listOthersMilestones() async {
+    _milestoneOthersList.clear();
+    await _milestoneUseCase.list(_milestoneOthersList, false);
   }
 
   Future<void> append({

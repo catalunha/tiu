@@ -6,7 +6,7 @@ class UserEntity {
   UserModel fromParse(ParseUser parseUser) {
     return UserModel(
       id: parseUser.objectId!,
-      email: parseUser.emailAddress!,
+      email: parseUser.username!,
       profile: parseUser.get('profile') != null
           ? UserProfileEntity().fromParse(parseUser.get('profile'))
           : null,

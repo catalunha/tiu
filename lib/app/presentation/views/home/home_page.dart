@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tiu/app/presentation/controllers/auth/splash/splash_controller.dart';
 import 'package:tiu/app/presentation/controllers/home/home_controller.dart';
-import 'package:tiu/app/presentation/controllers/milestone/milestone_controller.dart';
 import 'package:tiu/app/presentation/views/home/parts/popmenu_user.dart';
 import 'package:tiu/app/presentation/views/utils/app_appbar.dart';
 import 'package:tiu/app/routes.dart';
@@ -10,7 +9,6 @@ import 'package:tiu/app/routes.dart';
 class HomePage extends StatefulWidget {
   final SplashController _splashController = Get.find();
   final HomeController _homeController = Get.find();
-  final MilestoneController _milestoneController = Get.find();
 
   HomePage({Key? key}) : super(key: key);
 
@@ -36,7 +34,8 @@ class _HomePageState extends State<HomePage> {
                   title: const Text(
                     'Gerenciar meus marcos',
                   ),
-                  onTap: () => widget._milestoneController.listMyMilestones(),
+                  onTap: () => Get.toNamed(Routes.milestoneList,
+                      arguments: 'myMilestones'),
                 ),
               ),
               Card(
@@ -44,7 +43,8 @@ class _HomePageState extends State<HomePage> {
                   title: const Text(
                     'Visualizar outros marcos',
                   ),
-                  onTap: () => Get.toNamed(Routes.milestoneOthersList),
+                  onTap: () => Get.toNamed(Routes.milestoneOthersList,
+                      arguments: 'OthersMilestones'),
                 ),
               ),
             ],

@@ -15,7 +15,8 @@ class MilestoneUseCaseImpl implements MilestoneUseCase {
   Future<void> delete(String id) => _repository.delete(id);
 
   @override
-  Future<void> list(RxList<MilestoneModel> list) => _repository.list(list);
+  Future<void> list(RxList<MilestoneModel> list, bool myMilestones) =>
+      _repository.list(list, myMilestones);
 
   @override
   Future<void> update(MilestoneModel courseModel) =>
