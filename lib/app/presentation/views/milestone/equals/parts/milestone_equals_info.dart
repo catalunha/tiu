@@ -3,18 +3,18 @@ import 'package:get/get.dart';
 import 'package:tiu/app/domain/models/milestone_model.dart';
 import 'package:tiu/app/presentation/controllers/milestone/milestone_controller.dart';
 
-class MilestoneOthersInfo extends StatelessWidget {
+class MilestoneEqualsInfo extends StatelessWidget {
   final MilestoneController _milestoneController = Get.find();
 
   final MilestoneModel milestone;
-  MilestoneOthersInfo({Key? key, required this.milestone}) : super(key: key);
+  MilestoneEqualsInfo({Key? key, required this.milestone}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      // onTap: () {
-      //   _milestoneController.edit(milestone.id!);
-      // },
+      onTap: () {
+        // _milestoneController.edit(milestone.id!);
+      },
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(5.0),

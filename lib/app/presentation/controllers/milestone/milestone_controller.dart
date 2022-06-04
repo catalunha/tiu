@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:tiu/app/data/datasources/back4app/milestone/milestone_repository_exception.dart';
 import 'package:tiu/app/domain/models/csv_model.dart';
 import 'package:tiu/app/domain/models/milestone_model.dart';
+import 'package:tiu/app/domain/models/milestones_equals_model.dart';
 import 'package:tiu/app/domain/usecases/milestone/milestone_usecase.dart';
 import 'package:tiu/app/presentation/controllers/auth/splash/splash_controller.dart';
 import 'package:tiu/app/presentation/controllers/utils/mixins/loader_mixin.dart';
@@ -24,6 +25,9 @@ class MilestoneController extends GetxController
   final _milestoneOthersList = <MilestoneModel>[].obs;
   List<MilestoneModel> get milestonesOthers => _milestoneOthersList.toList();
 
+  final _milestoneEquals = <MilestonesEqualsModel>[].obs;
+  List<MilestonesEqualsModel> get milestoneEquals => _milestoneEquals.toList();
+
   final _milestone = Rxn<MilestoneModel>();
   MilestoneModel? get milestone => _milestone.value;
 
@@ -37,8 +41,10 @@ class MilestoneController extends GetxController
     String arg = Get.arguments;
     if (arg == 'myMilestones') {
       listMyMilestones();
-    } else {
+    } else if (arg == 'OthersMilestones') {
       listOthersMilestones();
+    } else if (arg == 'EqualsMilestones') {
+      milestonesEquals();
     }
     loaderListener(_loading);
     messageListener(_message);
@@ -53,6 +59,20 @@ class MilestoneController extends GetxController
   Future<void> listOthersMilestones() async {
     _milestoneOthersList.clear();
     await _milestoneUseCase.list(_milestoneOthersList, false);
+  }
+
+  Future<void> milestonesEquals() async {
+    await listMyMilestones();
+    await listOthersMilestones();
+    for (var my in milestones) {
+      for (var others in milestonesOthers) {
+        if (my.name == others.name) {
+          _milestoneEquals
+              .add(MilestonesEqualsModel(milestonesEquals: [my, others]));
+        }
+      }
+    }
+    Get.toNamed(Routes.milestoneEqualsList);
   }
 
   Future<void> append({

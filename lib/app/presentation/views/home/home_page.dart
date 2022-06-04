@@ -47,6 +47,15 @@ class _HomePageState extends State<HomePage> {
                       arguments: 'OthersMilestones'),
                 ),
               ),
+              Card(
+                child: ListTile(
+                  title: const Text(
+                    'Comparar marcos',
+                  ),
+                  onTap: () => Get.toNamed(Routes.milestoneEqualsList,
+                      arguments: 'EqualsMilestones'),
+                ),
+              ),
             ],
           ),
         ));

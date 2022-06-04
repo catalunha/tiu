@@ -10,6 +10,7 @@ import 'package:tiu/app/presentation/views/auth/register/email/auth_register_ema
 import 'package:tiu/app/presentation/views/auth/splash/splash_page.dart';
 import 'package:tiu/app/presentation/views/home/home_page.dart';
 import 'package:tiu/app/presentation/views/milestone/append/milestone_append_page.dart';
+import 'package:tiu/app/presentation/views/milestone/equals/milestone_equals_list_page.dart';
 import 'package:tiu/app/presentation/views/milestone/list/milestone_list_page.dart';
 import 'package:tiu/app/presentation/views/milestone/others/milestone_others_list_page.dart';
 import 'package:tiu/app/presentation/views/milestone/readfile/milestone_readfile_page.dart';
@@ -29,6 +30,7 @@ class Routes {
   static const milestoneReadFile = '/milestone/readfile';
 
   static const milestoneOthersList = '/milestone/others/list';
+  static const milestoneEqualsList = '/milestone/equals/list';
 
   static final pageList = [
     GetPage(
@@ -75,6 +77,11 @@ class Routes {
       name: Routes.milestoneOthersList,
       binding: MilestoneDependencies(),
       page: () => MilestoneOthersListPage(),
+    ),
+    GetPage(
+      name: Routes.milestoneEqualsList,
+      binding: MilestoneDependencies(),
+      page: () => MilestoneEqualsListPage(),
     ),
   ];
 }
