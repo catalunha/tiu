@@ -65,11 +65,15 @@ class MilestoneController extends GetxController
     await listMyMilestones();
     await listOthersMilestones();
     for (var my in milestones) {
+      final milestonesEqualsModel =
+          MilestonesEqualsModel(milestonesEquals: [my]);
       for (var others in milestonesOthers) {
         if (my.name == others.name) {
-          _milestoneEquals
-              .add(MilestonesEqualsModel(milestonesEquals: [my, others]));
+          milestonesEqualsModel.milestonesEquals.add(others);
         }
+      }
+      if (milestonesEqualsModel.milestonesEquals.length > 1) {
+        _milestoneEquals.add(milestonesEqualsModel);
       }
     }
     Get.toNamed(Routes.milestoneEqualsList);
