@@ -18,9 +18,8 @@ class MilestoneOthersListPage extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.search),
-            // trailing: InkWell(
-            //     onTap: () => _milestoneController.offMilestoneSearch(),
-            //     child: const Icon(Icons.search_off)),
+            trailing: Obx(
+                () => Text('${_milestoneController.milestoneSearch.length}')),
             title: TextField(
               decoration: const InputDecoration(
                 labelText: 'Digite o nome de um marco',
