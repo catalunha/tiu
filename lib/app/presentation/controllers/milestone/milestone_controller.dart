@@ -35,6 +35,9 @@ class MilestoneController extends GetxController
   final _csvList = <CsvModel>[].obs;
   List<CsvModel> get csvList => _csvList.toList();
 
+  final _milestoneSearchList = <MilestoneModel>[].obs;
+  List<MilestoneModel> get milestoneSearch => _milestoneSearchList.toList();
+
   String? fileString;
 
   @override
@@ -403,4 +406,28 @@ class MilestoneController extends GetxController
       }
     }
   }
+
+  onMilestoneSearch(String value, bool myMilestones) async {
+    print('onMilestoneSearch $value');
+    if (value.isEmpty) {
+      _milestoneSearchList.clear();
+    } else {
+      _milestoneSearchList.clear();
+      if (myMilestones) {
+        _milestoneSearchList.addAll([
+          ..._milestoneList.where((milestone) => milestone.name.contains(value))
+        ]);
+      } else {
+        _milestoneSearchList.addAll([
+          ..._milestoneOthersList
+              .where((milestone) => milestone.name.contains(value))
+        ]);
+      }
+    }
+    print(_milestoneSearchList.length);
+  }
+
+  // offMilestoneSearch() {
+  //   _milestoneSearchList.clear();
+  // }
 }

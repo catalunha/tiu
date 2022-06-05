@@ -20,11 +20,53 @@ class MilestoneListPage extends StatelessWidget {
           ElevatedButton(
               onPressed: () => Get.toNamed(Routes.milestoneReadFile),
               child: const Text('Importar novos marcos')),
-          Expanded(
-            child: Obx(() => MilestoneList(
-                  milestones: _milestoneController.milestones,
-                )),
+          ListTile(
+            leading: const Icon(Icons.search),
+            // trailing: InkWell(
+            //     onTap: () => _milestoneController.offMilestoneSearch(),
+            //     child: const Icon(Icons.search_off)),
+            title: TextField(
+              decoration: const InputDecoration(
+                labelText: 'Digite o nome de um marco',
+                hintStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontStyle: FontStyle.italic,
+                ),
+                border: InputBorder.none,
+              ),
+              onChanged: (value) {
+                _milestoneController.onMilestoneSearch(value, true);
+              },
+            ),
           ),
+          Expanded(
+            child: Obx(
+              () => _milestoneController.milestoneSearch.isNotEmpty
+                  ? Card(
+                      color: Colors.black,
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: SizedBox(
+                          height: 200,
+                          child: MilestoneList(
+                            milestones: _milestoneController.milestoneSearch,
+                          ),
+                        ),
+                      ),
+                    )
+                  : MilestoneList(
+                      milestones: _milestoneController.milestones,
+                    ),
+            ),
+          ),
+          // Expanded(
+          //   child: Obx(
+          //     () => MilestoneList(
+          //       milestones: _milestoneController.milestones,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

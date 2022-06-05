@@ -16,10 +16,43 @@ class MilestoneOthersListPage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          ListTile(
+            leading: const Icon(Icons.search),
+            // trailing: InkWell(
+            //     onTap: () => _milestoneController.offMilestoneSearch(),
+            //     child: const Icon(Icons.search_off)),
+            title: TextField(
+              decoration: const InputDecoration(
+                labelText: 'Digite o nome de um marco',
+                hintStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontStyle: FontStyle.italic,
+                ),
+                border: InputBorder.none,
+              ),
+              onChanged: (value) {
+                _milestoneController.onMilestoneSearch(value, false);
+              },
+            ),
+          ),
           Expanded(
-            child: Obx(() => MilestoneOthersList(
-                  milestones: _milestoneController.milestonesOthers,
-                )),
+            child: Obx(() => _milestoneController.milestoneSearch.isNotEmpty
+                ? Card(
+                    color: Colors.black,
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: SizedBox(
+                        height: 200,
+                        child: MilestoneOthersList(
+                          milestones: _milestoneController.milestoneSearch,
+                        ),
+                      ),
+                    ),
+                  )
+                : MilestoneOthersList(
+                    milestones: _milestoneController.milestonesOthers,
+                  )),
           ),
         ],
       ),
