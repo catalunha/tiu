@@ -20,7 +20,7 @@ class AppLaunch {
 
   static void launchGoogleMaps(num lat, num long) async {
     final Uri uri = Uri.parse(
-        "'https://www.google.com/maps/place/$lat+$long/@$lat,$long,15z'");
+        "https://www.google.com/maps/place/$lat+$long/@$lat,$long,15z");
     _launchUri(uri);
   }
 }
