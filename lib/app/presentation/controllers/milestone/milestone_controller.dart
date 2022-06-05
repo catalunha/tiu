@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:tiu/app/data/datasources/back4app/milestone/milestone_repository_exception.dart';
 import 'package:tiu/app/domain/models/csv_model.dart';
 import 'package:tiu/app/domain/models/milestone_model.dart';
+import 'package:tiu/app/domain/models/milestones_equals_calcs_model.dart';
 import 'package:tiu/app/domain/models/milestones_equals_model.dart';
 import 'package:tiu/app/domain/usecases/milestone/milestone_usecase.dart';
 import 'package:tiu/app/presentation/controllers/auth/splash/splash_controller.dart';
@@ -62,21 +63,103 @@ class MilestoneController extends GetxController
   }
 
   Future<void> milestonesEquals() async {
-    await listMyMilestones();
-    await listOthersMilestones();
-    for (var my in milestones) {
-      final milestonesEqualsModel =
-          MilestonesEqualsModel(milestonesEquals: [my]);
-      for (var others in milestonesOthers) {
-        if (my.name == others.name) {
-          milestonesEqualsModel.milestonesEquals.add(others);
+    try {
+      await listMyMilestones();
+      await listOthersMilestones();
+      for (var my in milestones) {
+        final milestonesEqualsModel = MilestonesEqualsModel(
+            milestonesEquals: [my], milestonesEqualsCalcs: []);
+        for (var others in milestonesOthers) {
+          if (my.name == others.name) {
+            milestonesEqualsModel.milestonesEquals.add(others);
+            comparativeAnalysis(my, others, milestonesEqualsModel);
+          }
+        }
+        if (milestonesEqualsModel.milestonesEquals.length > 1) {
+          _milestoneEquals.add(milestonesEqualsModel);
         }
       }
-      if (milestonesEqualsModel.milestonesEquals.length > 1) {
-        _milestoneEquals.add(milestonesEqualsModel);
+      Get.toNamed(Routes.milestoneEqualsList);
+    } catch (e) {
+      _message.value = MessageModel(
+        title: 'Erro em analise',
+        message: 'Nao foi possivel analisar alguns dados',
+        isError: true,
+      );
+    } finally {}
+  }
+
+  comparativeAnalysis(MilestoneModel my, MilestoneModel others,
+      MilestonesEqualsModel milestonesEquals) {
+    MilestonesEqualsCalcsModel milestonesEqualsCalcsModel =
+        MilestonesEqualsCalcsModel(
+            name: my.name, idMy: my.id!, idOther: others.id!);
+
+    if (my.utmx != null && others.utmx != null) {
+      if ((my.utmx! - others.utmx!).abs() > 0.5) {
+        milestonesEqualsCalcsModel = milestonesEqualsCalcsModel.copyWith(
+            utmx: (my.utmx! - others.utmx!));
       }
     }
-    Get.toNamed(Routes.milestoneEqualsList);
+    if (my.utmy != null && others.utmy != null) {
+      if ((my.utmy! - others.utmy!).abs() > 0.5) {
+        milestonesEqualsCalcsModel = milestonesEqualsCalcsModel.copyWith(
+            utmy: (my.utmy! - others.utmy!));
+      }
+    }
+    if (my.utmz != null && others.utmz != null) {
+      if ((my.utmz! - others.utmz!).abs() > 0.5) {
+        milestonesEqualsCalcsModel = milestonesEqualsCalcsModel.copyWith(
+            utmz: (my.utmz! - others.utmz!));
+      }
+    }
+    // https://www.pilotopolicial.com.br/calculando-distancias-e-direcoes-utilizando-coordenadas-geograficas/
+    if (my.lat != null && others.lat != null) {
+      milestonesEqualsCalcsModel =
+          milestonesEqualsCalcsModel.copyWith(lat: (my.lat! - others.lat!));
+    }
+    if (my.long != null && others.long != null) {
+      milestonesEqualsCalcsModel =
+          milestonesEqualsCalcsModel.copyWith(long: (my.long! - others.long!));
+    }
+    if (my.utmfuso != null && others.utmfuso != null) {
+      if (my.utmfuso != others.utmfuso) {
+        milestonesEqualsCalcsModel = milestonesEqualsCalcsModel.copyWith(
+            utmfuso: ('${my.utmfuso!} = ${others.utmfuso!}'));
+      }
+    }
+    if (my.utmzone != null && others.utmzone != null) {
+      if (my.utmzone != others.utmzone) {
+        milestonesEqualsCalcsModel = milestonesEqualsCalcsModel.copyWith(
+            utmzone: ('${my.utmzone!} = ${others.utmzone!}'));
+      }
+    }
+    if (my.utmpole != null && others.utmpole != null) {
+      if (my.utmpole != others.utmpole) {
+        milestonesEqualsCalcsModel = milestonesEqualsCalcsModel.copyWith(
+            utmpole: ('${my.utmpole!} = ${others.utmpole!}'));
+      }
+    }
+    milestonesEquals.milestonesEqualsCalcs.add(milestonesEqualsCalcsModel);
+  }
+
+  void updateMyMilestoneWithOther(String myId, String otherId) async {
+    MilestoneModel my =
+        _milestoneList.firstWhere((element) => element.id == myId);
+    MilestoneModel other =
+        _milestoneOthersList.firstWhere((element) => element.id == otherId);
+    MilestoneModel model = my.copyWith(
+      utmx: other.utmx,
+      utmy: other.utmy,
+      utmz: other.utmz,
+      utmfuso: other.utmfuso,
+      utmzone: other.utmzone,
+      utmpole: other.utmpole,
+      lat: other.lat,
+      long: other.long,
+    );
+    await _milestoneUseCase.update(model);
+    Get.back();
   }
 
   Future<void> append({
@@ -126,7 +209,7 @@ class MilestoneController extends GetxController
     } on MilestoneRepositoryException {
       _message.value = MessageModel(
         title: 'Erro em Repository',
-        message: 'Nao foi possivel salvar o contato',
+        message: 'Nao foi possivel salvar os dados',
         isError: true,
       );
     } finally {

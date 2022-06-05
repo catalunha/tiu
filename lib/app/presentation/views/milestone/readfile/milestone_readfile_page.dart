@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tiu/app/domain/models/csv_model.dart';
 import 'package:tiu/app/domain/utils/enums.dart';
 import 'package:tiu/app/presentation/controllers/milestone/milestone_controller.dart';
 import 'package:tiu/app/presentation/views/milestone/append/parts/file_data_button.dart';
 import 'package:tiu/app/presentation/views/utils/app_appbar.dart';
+import 'package:tiu/app/presentation/views/utils/app_launch.dart';
 
 class MilestoneReadFilePage extends StatefulWidget {
   final MilestoneController _milestoneController = Get.find();
@@ -49,8 +51,9 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
                   children: buildRow(),
                   columnWidths: const {
                     0: FractionColumnWidth(0.07),
-                    5: FractionColumnWidth(0.09),
-                    6: FractionColumnWidth(0.09),
+                    5: FractionColumnWidth(0.08),
+                    6: FractionColumnWidth(0.08),
+                    7: FractionColumnWidth(0.08),
                   },
                 ),
               ),
@@ -113,28 +116,34 @@ class _MilestoneReadFilePageState extends State<MilestoneReadFilePage> {
       header('UTM'),
       header('Geog.'),
       header('Elev.'),
-      header('Dup.'),
+      header('Sts.'),
+      header('Loc.'),
       header('Del.'),
     ]));
     for (var i = 0; i < widget._milestoneController.csvList.length; i++) {
+      CsvModel csvModel = widget._milestoneController.csvList[i];
       rows.add(
         TableRow(
           children: [
             line(i + 1),
-            line(widget._milestoneController.csvList[i].name),
-            line(
-                '${widget._milestoneController.csvList[i].utmx}\n${widget._milestoneController.csvList[i].utmy}'),
-            line(
-                '${widget._milestoneController.csvList[i].lat}\n${widget._milestoneController.csvList[i].long}'),
-            line(widget._milestoneController.csvList[i].utmz),
-            widget._milestoneController.csvList[i].duplicated == null
-                ? const Icon(Icons.location_pin)
+            line(csvModel.name),
+            line('${csvModel.utmx}\n${csvModel.utmy}'),
+            line('${csvModel.lat}\n${csvModel.long}'),
+            line(csvModel.utmz),
+            csvModel.duplicated == null
+                ? const Icon(Icons.add)
                 : const Icon(Icons.copy_outlined),
             InkWell(
-                onTap: () {
-                  widget._milestoneController.deleteCsv(i);
-                },
-                child: const Icon(Icons.delete_forever)),
+              onTap: () =>
+                  AppLaunch.launchGoogleMaps(csvModel.lat!, csvModel.long!),
+              child: const Icon(Icons.location_on),
+            ),
+            InkWell(
+              onTap: () {
+                widget._milestoneController.deleteCsv(i);
+              },
+              child: const Icon(Icons.delete_forever),
+            ),
           ],
         ),
       );

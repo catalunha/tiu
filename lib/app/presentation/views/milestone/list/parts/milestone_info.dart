@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tiu/app/domain/models/milestone_model.dart';
 import 'package:tiu/app/presentation/controllers/milestone/milestone_controller.dart';
+import 'package:tiu/app/presentation/views/utils/app_launch.dart';
 
 class MilestoneInfo extends StatelessWidget {
   final MilestoneController _milestoneController = Get.find();
@@ -26,6 +27,11 @@ class MilestoneInfo extends StatelessWidget {
               Text('${milestone.lat} | ${milestone.long}'),
               Text(
                   '${milestone.utmz} | ${milestone.utmfuso} | ${milestone.utmzone} | ${milestone.utmpole}'),
+              IconButton(
+                onPressed: () =>
+                    AppLaunch.launchGoogleMaps(milestone.lat!, milestone.long!),
+                icon: const Icon(Icons.location_on),
+              )
             ],
           ),
         ),

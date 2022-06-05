@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiu/app/domain/models/milestones_equals_model.dart';
+import 'package:tiu/app/presentation/views/milestone/equals/parts/milestone_equals_calcs_info.dart';
 import 'package:tiu/app/presentation/views/milestone/equals/parts/milestone_equals_info.dart';
 
 class MilestoneEqualsList extends StatelessWidget {
@@ -18,9 +19,14 @@ class MilestoneEqualsList extends StatelessWidget {
         return Card(
           color: Colors.grey,
           child: Column(
-            children: milestone.milestonesEquals
-                .map((e) => MilestoneEqualsInfo(milestone: e))
-                .toList(),
+            children: [
+              ...milestone.milestonesEquals
+                  .map((e) => MilestoneEqualsInfo(milestone: e))
+                  .toList(),
+              ...milestone.milestonesEqualsCalcs
+                  .map((e) => MilestoneEqualsCalcsInfo(calcs: e))
+                  .toList(),
+            ],
           ),
         );
 
