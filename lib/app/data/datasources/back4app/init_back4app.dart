@@ -6,8 +6,8 @@ class InitBack4app {
   }
 
   Future<bool> init() async {
-    const keyApplicationId = '87r8wlI2XbpS8VzOIjgC4CDGW8Gsi4E0gV7pmp6z';
-    const keyClientKey = 'w6445gkBKgLFuHyfsQADBSl0AxXPJhb3IGoTM0SD';
+    const keyApplicationId = '';
+    const keyClientKey = '';
     const keyParseServerUrl = 'https://parseapi.back4app.com';
     const keyLiveQueryUrl = 'https://tiu.b4a.io';
     await Parse().initialize(
